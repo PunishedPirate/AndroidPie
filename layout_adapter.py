@@ -82,7 +82,6 @@ def filter_node_list(func):
 def parse_source_xml(src_path):
     node = None
     for number, line in enumerate(open(src_path)):
-        number += 1
 
         # 0.尝试获得label
         label = get_label(line)
@@ -303,6 +302,7 @@ def main():
         adapt_xmls(os.getcwd(), *sys.argv[2:])
 
     print('This is for testing....')
+
     # res_dir = '/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland/app/src/main/res'
     # layout_dir = '/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland/app/src/main/res/layout'
     # file_name = 'activity_beauty_memory.xml'
@@ -318,7 +318,7 @@ def main():
     # print(get_words(':layout_marginRight='))
 
     # src_path = 'app/src/main/res/drawable/dialog_default_title_bg.xml'
-    # adapt_single_xml_relatively(src_path)
+    # adapt_single_xml_relatively(src_path, 'xhdpi', 'default', 'hdpi', 'xxhdpi')
 
 
 if __name__ == '__main__':
