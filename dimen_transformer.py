@@ -7,8 +7,11 @@ import os
 import re
 import sys
 
-from color_printer import CLOSE, WORD_BLUE, WORD_GREEN, WORD_YELLOW
+from color_printer import CLOSE
+from color_printer import WORD_BLUE
+from color_printer import WORD_GREEN
 from color_printer import WORD_RED
+from color_printer import WORD_YELLOW
 from util import get_file_name
 from util import get_path_relative_2_absolute
 from util import get_res_dir
@@ -54,9 +57,9 @@ def generate_single_dimen_xml(src_path, dst_path, scale):
     try:
         while True:
             number, line, name, src_dp, dst_dp = next(g)
-            print(number, ':\t', line.strip(), '\t',
-                  WORD_GREEN, name, '\t',
-                  WORD_RED, src_dp, WORD_YELLOW, '\t=>\t', WORD_RED, dst_dp, CLOSE, sep='')
+            print(number, ': ', line.strip(), ' ',
+                  WORD_GREEN, name, ' ',
+                  WORD_RED, src_dp, WORD_YELLOW, ' => ', WORD_RED, dst_dp, CLOSE, sep='')
     except StopIteration as e:
         if not e.value:
             os.remove(dst_path)

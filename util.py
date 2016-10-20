@@ -93,7 +93,7 @@ def generate_file_lines_complex(src_path, dst_path, line_pattern, **kwargs):
     for number, line in enumerate(open(src_path)):
         new_line = line
         if re.match(line_pattern, line):
-            if map:
+            if kwargs:
                 for key in kwargs:
                     new_line = new_line.replace(key, kwargs[key])
             yield number, line, new_line

@@ -121,39 +121,37 @@ def parse_source_xml(src_path):
             node = None
 
 
-# TODO: optimize, 是否可以一边parse，一遍写文件吗？
+# 修改源文件，将数值dp、sp替换成dimens资源名称
 def rewrite_source_xml(src_path):
     g = parse_source_xml(src_path)
-    node = get_node(g)
+    node = generate_value(g)
     if node is None:
         return
 
-    src_file = open(src_path)
     dst_path = src_path + '.tmp'
     dst_file = open(dst_path, mode='w')
-    attr_no = 0
-    line_number, attr_name, attr_value = node.attr_list[attr_no]
-    for num, line in enumerate(src_file):
+    attr_index = 0
+    line_number, attr_name, attr_value = node.attr_list[attr_index]
+    for num, line in enumerate(open(src_path)):
         if num != line_number:
             dst_file.writelines(line)
         else:
             line = line.replace(attr_value, '@dimen/' + node.get_res_name(attr_name))
             dst_file.writelines(line)
-            attr_no += 1
-            if attr_no >= len(node.attr_list):
-                node = get_node(g)
-                attr_no = 0
+            attr_index += 1
+            if attr_index >= len(node.attr_list):
+                node = generate_value(g)
+                attr_index = 0
             if node:
-                line_number, attr_name, attr_value = node.attr_list[attr_no]
-    src_file.close()
+                line_number, attr_name, attr_value = node.attr_list[attr_index]
     os.remove(src_path)
     os.rename(dst_path, src_path)
 
 
-def get_node(g):
+def generate_value(g):
     try:
-        node = next(g)
-        return node
+        value = next(g)
+        return value
     except StopIteration:
         return None
 
@@ -161,7 +159,7 @@ def get_node(g):
 # 为一个layout xml创建标准的dimen resource xml
 def create_dimen_xml(src_path, src_dimen='hdpi'):
     g = parse_source_xml(src_path)
-    node = get_node(g)
+    node = generate_value(g)
     if node is None:
         return
 
@@ -186,7 +184,7 @@ def create_dimen_xml(src_path, src_dimen='hdpi'):
                 line = '    <dimen name="' + node.get_res_name(key) + '">' + value + '</dimen>\n'
                 dst_file.writelines(line)
             dst_file.writelines('\n')
-            node = get_node(g)
+            node = generate_value(g)
         dst_file.writelines('</resources>')
     return dst_path
 

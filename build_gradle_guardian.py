@@ -6,13 +6,13 @@
 import os
 import sys
 
-import util
 from color_printer import CLOSE
 from color_printer import WORD_GREEN
 from color_printer import WORD_RED
 from color_printer import WORD_YELLOW
 from color_printer import print_blue
 from util import get_build_gradle_paths
+from util import replace_file_lines
 
 
 def update_build_gradle_file_lines(old_string, new_string, root_dir=os.getcwd(), pattern=None):
@@ -20,7 +20,7 @@ def update_build_gradle_file_lines(old_string, new_string, root_dir=os.getcwd(),
         pattern = '.*(compile|provided).*:%s\'$' % old_string
     for path in get_build_gradle_paths(root_dir):
         show_file_path = False
-        for number, line, new_line in util.replace_file_lines(path, pattern, old_string, new_string):
+        for number, line, new_line in replace_file_lines(path, pattern, old_string, new_string):
             print(WORD_YELLOW, '\tline', number, WORD_RED, line.strip(),
                   WORD_YELLOW, ' ==> ', WORD_RED, new_line.strip(), CLOSE)
             show_file_path = True
