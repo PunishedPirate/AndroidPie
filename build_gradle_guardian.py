@@ -7,7 +7,11 @@ import os
 import sys
 
 import util
-from color_printer import *
+from color_printer import CLOSE
+from color_printer import WORD_GREEN
+from color_printer import WORD_RED
+from color_printer import WORD_YELLOW
+from color_printer import print_blue
 from util import get_build_gradle_paths
 
 
@@ -37,7 +41,7 @@ def main():
               CLOSE)
         print(CLOSE)
 
-    # update_build_gradle_file_line('23.2.0', '24.2.1', '/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland')
+        # update_build_gradle_file_line('23.2.0', '24.2.1', '/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland')
 
 
 if __name__ == '__main__':

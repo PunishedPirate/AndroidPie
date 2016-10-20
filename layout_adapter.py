@@ -7,12 +7,18 @@ import os
 import re
 import sys
 
-from color_printer import *
+from color_printer import CLOSE
+from color_printer import WORD_BLUE
+from color_printer import WORD_GREEN
+from color_printer import WORD_RED
+from color_printer import WORD_YELLOW
 from dimen_transformer import transform_single_dimen_xml
-from util import camel_to_underline, filter_file_lines, get_res_dirs, get_path_relative_2_absolute, \
-    get_dst_dimen_xml_path
+from util import camel_to_underline
+from util import filter_file_lines
+from util import get_dst_dimen_xml_path
+from util import get_path_relative_2_absolute
+from util import get_res_dirs
 
-# 需要检查的属性，若这些属性存在，并且设置了响应的dp值，则需要进行机型适配
 attr_dict = {'View': ['layout_width=', 'layout_height=',
                       'padding=', 'paddingLeft=', 'paddingTop=', 'paddingRight=', 'paddingBottom=',
                       'margin=', 'marginLeft=', 'marginTop=', 'marginRight=', 'marginBottom=',

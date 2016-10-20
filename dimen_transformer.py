@@ -7,9 +7,14 @@ import os
 import re
 import sys
 
-from color_printer import *
-from util import get_res_dirs, get_res_value_dir, get_file_name, get_res_dir, get_src_dimen, \
-    get_path_relative_2_absolute
+from color_printer import CLOSE, WORD_BLUE, WORD_GREEN, WORD_YELLOW
+from color_printer import WORD_RED
+from util import get_file_name
+from util import get_path_relative_2_absolute
+from util import get_res_dir
+from util import get_res_dirs
+from util import get_res_value_dir
+from util import get_src_dimen
 
 dimen_dict = {'default': 1.5, 'hdpi': 1.5, 'xhdpi': 2.0, 'xxhdpi': 3.0}
 

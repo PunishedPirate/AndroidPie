@@ -7,7 +7,11 @@ import os
 import re
 import sys
 
-from print_color import *
+from color_printer import CLOSE
+from color_printer import WORD_GREEN
+from color_printer import WORD_RED
+from color_printer import WORD_YELLOW
+from color_printer import print_blue
 
 
 def replace_file_line(old_string, new_string, root_dir=os.getcwd(), name_pattern=None, line_pattern=None):
@@ -69,4 +73,4 @@ if __name__ == '__main__':
               CLOSE)
         print(CLOSE)
 
-    # replace_file_line('23.3.0', '24.2.0', '/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland')
+        # replace_file_line('23.3.0', '24.2.0', '/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland')
