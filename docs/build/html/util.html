@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util module &#8212; AndroidPie 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="AndroidPie 1.0.0 documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-util">
+<span id="util-module"></span><h1>util module<a class="headerlink" href="#module-util" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="util.camel_to_underline">
+<code class="descclassname">util.</code><code class="descname">camel_to_underline</code><span class="sig-paren">(</span><em>camel_format</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#camel_to_underline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.camel_to_underline" title="Permalink to this definition">¶</a></dt>
+<dd><p>驼峰命名格式转下划线命名格式</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.filter_file_lines">
+<code class="descclassname">util.</code><code class="descname">filter_file_lines</code><span class="sig-paren">(</span><em>src_path</em>, <em>line_pattern</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#filter_file_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.filter_file_lines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.generate_file_lines">
+<code class="descclassname">util.</code><code class="descname">generate_file_lines</code><span class="sig-paren">(</span><em>src_path</em>, <em>dst_path</em>, <em>line_pattern</em>, <em>old_string</em>, <em>new_string</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#generate_file_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.generate_file_lines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.generate_file_lines_complex">
+<code class="descclassname">util.</code><code class="descname">generate_file_lines_complex</code><span class="sig-paren">(</span><em>src_path</em>, <em>dst_path</em>, <em>line_pattern</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#generate_file_lines_complex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.generate_file_lines_complex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_build_gradle_paths">
+<code class="descclassname">util.</code><code class="descname">get_build_gradle_paths</code><span class="sig-paren">(</span><em>top_dir='/Users/zhangyuwen/Repository/OpenSource/AndroidPie/docs'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_build_gradle_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_build_gradle_paths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_dst_dimen_xml_path">
+<code class="descclassname">util.</code><code class="descname">get_dst_dimen_xml_path</code><span class="sig-paren">(</span><em>src_path</em>, <em>src_dimen</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_dst_dimen_xml_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_dst_dimen_xml_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_file_name">
+<code class="descclassname">util.</code><code class="descname">get_file_name</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_file_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_file_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_match_dirs">
+<code class="descclassname">util.</code><code class="descname">get_match_dirs</code><span class="sig-paren">(</span><em>top_dir='/Users/zhangyuwen/Repository/OpenSource/AndroidPie/docs'</em>, <em>yes_pattern='^.*/res$'</em>, <em>no_pattern=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_match_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_match_dirs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_match_paths">
+<code class="descclassname">util.</code><code class="descname">get_match_paths</code><span class="sig-paren">(</span><em>top_dir='/Users/zhangyuwen/Repository/OpenSource/AndroidPie/docs'</em>, <em>yes_pattern='^.*\\.xml$'</em>, <em>no_pattern=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_match_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_match_paths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_path_relative_2_absolute">
+<code class="descclassname">util.</code><code class="descname">get_path_relative_2_absolute</code><span class="sig-paren">(</span><em>relative_path</em>, <em>root_dir='/Users/zhangyuwen/Repository/OpenSource/AndroidPie/docs'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_path_relative_2_absolute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_path_relative_2_absolute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_res_dir">
+<code class="descclassname">util.</code><code class="descname">get_res_dir</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_res_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_res_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_res_dirs">
+<code class="descclassname">util.</code><code class="descname">get_res_dirs</code><span class="sig-paren">(</span><em>top_dir='/Users/zhangyuwen/Repository/OpenSource/AndroidPie/docs'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_res_dirs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_res_dirs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_res_value_dir">
+<code class="descclassname">util.</code><code class="descname">get_res_value_dir</code><span class="sig-paren">(</span><em>res_dir</em>, <em>src_dimen</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_res_value_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_res_value_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_src_dimen">
+<code class="descclassname">util.</code><code class="descname">get_src_dimen</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_src_dimen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_src_dimen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.get_unique_number">
+<code class="descclassname">util.</code><code class="descname">get_unique_number</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#get_unique_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.get_unique_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.main">
+<code class="descclassname">util.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.replace_file_lines">
+<code class="descclassname">util.</code><code class="descname">replace_file_lines</code><span class="sig-paren">(</span><em>src_path</em>, <em>line_pattern</em>, <em>old_string</em>, <em>new_string</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#replace_file_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.replace_file_lines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.replace_file_lines_complex">
+<code class="descclassname">util.</code><code class="descname">replace_file_lines_complex</code><span class="sig-paren">(</span><em>src_path</em>, <em>line_pattern</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#replace_file_lines_complex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.replace_file_lines_complex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="util.underline_to_camel">
+<code class="descclassname">util.</code><code class="descname">underline_to_camel</code><span class="sig-paren">(</span><em>underline_format</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util.html#underline_to_camel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.underline_to_camel" title="Permalink to this definition">¶</a></dt>
+<dd><p>下划线命名格式驼峰命名格式</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/util.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, zhangyuwen1987@gmail.com.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/util.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

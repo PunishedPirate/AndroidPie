@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>replace_file_line &#8212; AndroidPie 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="AndroidPie 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for replace_file_line</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1">#  @author zhangyuwen1987@gmail.com</span>
+<span class="c1"># @date   2016/09/05</span>
+<span class="c1">#</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">CLOSE</span>
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">WORD_GREEN</span>
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">WORD_RED</span>
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">WORD_YELLOW</span>
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">print_blue</span>
+
+
+<div class="viewcode-block" id="replace_file_line"><a class="viewcode-back" href="../replace_file_line.html#replace_file_line.replace_file_line">[docs]</a><span class="k">def</span> <span class="nf">replace_file_line</span><span class="p">(</span><span class="n">old_string</span><span class="p">,</span> <span class="n">new_string</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">name_pattern</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line_pattern</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">name_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name_pattern</span> <span class="o">=</span> <span class="s1">&#39;^build.gradle$&#39;</span>
+    <span class="k">if</span> <span class="n">line_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">line_pattern</span> <span class="o">=</span> <span class="s1">&#39;.*(compile|provided).*:</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">$&#39;</span> <span class="o">%</span> <span class="n">old_string</span>
+
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">get_file_name_paths</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">name_pattern</span><span class="p">):</span>
+        <span class="n">replace_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">old_string</span><span class="p">,</span> <span class="n">new_string</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_file_name_paths"><a class="viewcode-back" href="../replace_file_line.html#replace_file_line.get_file_name_paths">[docs]</a><span class="k">def</span> <span class="nf">get_file_name_paths</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">name_pattern</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dirNames</span><span class="p">,</span> <span class="n">fileNames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">root_dir</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">fileName</span> <span class="ow">in</span> <span class="n">fileNames</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">name_pattern</span><span class="p">,</span> <span class="n">fileName</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">parent</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">fileName</span></div>
+
+
+<div class="viewcode-block" id="replace_file"><a class="viewcode-back" href="../replace_file_line.html#replace_file_line.replace_file">[docs]</a><span class="k">def</span> <span class="nf">replace_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">old_string</span><span class="p">,</span> <span class="n">new_string</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">new_path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.tmp&#39;</span>
+    <span class="n">show_file_path</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">new_line</span> <span class="ow">in</span> <span class="n">replace_string</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">,</span> <span class="n">old_string</span><span class="p">,</span> <span class="n">new_string</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">WORD_YELLOW</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">line&#39;</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">WORD_RED</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+              <span class="n">WORD_YELLOW</span><span class="p">,</span> <span class="s1">&#39; ==&gt; &#39;</span><span class="p">,</span> <span class="n">WORD_RED</span><span class="p">,</span> <span class="n">new_line</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">CLOSE</span><span class="p">)</span>
+        <span class="n">show_file_path</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">new_path</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_file_path</span><span class="p">:</span>
+        <span class="n">print_blue</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="replace_string"><a class="viewcode-back" href="../replace_file_line.html#replace_file_line.replace_string">[docs]</a><span class="k">def</span> <span class="nf">replace_string</span><span class="p">(</span><span class="n">in_path</span><span class="p">,</span> <span class="n">out_path</span><span class="p">,</span> <span class="n">old_string</span><span class="p">,</span> <span class="n">new_string</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">):</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">in_path</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+            <span class="n">new_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">old_string</span><span class="p">,</span> <span class="n">new_string</span><span class="p">)</span>
+            <span class="n">out_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">new_line</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">new_line</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+    <span class="n">out_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;param&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">replace_file_line</span><span class="p">(</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">WORD_GREEN</span><span class="p">,</span> <span class="s1">&#39;Please input args:&#39;</span><span class="p">,</span>
+              <span class="n">WORD_RED</span><span class="p">,</span> <span class="s1">&#39;(old_string, new_string, root_dir=os.getcwd(), &#39;</span>
+                        <span class="s1">&#39;path_pattern=&quot;^build.gradle$&quot;, line_pattern=&quot;.*compile.*:[old_string]</span><span class="se">\&#39;</span><span class="s1">$&quot;&#39;</span><span class="p">,</span>
+              <span class="n">CLOSE</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">CLOSE</span><span class="p">)</span>
+
+        <span class="c1"># replace_file_line(&#39;23.3.0&#39;, &#39;24.2.0&#39;, &#39;/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland&#39;)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, zhangyuwen1987@gmail.com.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dimen_transformer &#8212; AndroidPie 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="AndroidPie 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dimen_transformer</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># @author zhangyuwen1987@gmail.com</span>
+<span class="c1"># @date   2016/08/31</span>
+<span class="c1">#</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">CLOSE</span>
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">WORD_BLUE</span>
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">WORD_GREEN</span>
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">WORD_RED</span>
+<span class="kn">from</span> <span class="nn">color_printer</span> <span class="k">import</span> <span class="n">WORD_YELLOW</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="k">import</span> <span class="n">get_file_name</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="k">import</span> <span class="n">get_path_relative_2_absolute</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="k">import</span> <span class="n">get_res_dir</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="k">import</span> <span class="n">get_res_dirs</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="k">import</span> <span class="n">get_res_value_dir</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="k">import</span> <span class="n">get_src_dimen</span>
+
+<span class="n">dimen_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s1">&#39;hdpi&#39;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s1">&#39;xhdpi&#39;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s1">&#39;xxhdpi&#39;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="get_dimen"><a class="viewcode-back" href="../dimen_transformer.html#dimen_transformer.get_dimen">[docs]</a><span class="k">def</span> <span class="nf">get_dimen</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dimen_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_single_xml"><a class="viewcode-back" href="../dimen_transformer.html#dimen_transformer.generate_single_xml">[docs]</a><span class="k">def</span> <span class="nf">generate_single_xml</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span>
+                        <span class="n">line_pattern</span><span class="o">=</span><span class="s1">&#39;.*&lt;dimen.*</span><span class="se">\&quot;</span><span class="s1">&gt;.*&lt;\/dimen&gt;.*&#39;</span><span class="p">,</span>
+                        <span class="n">name_pattern</span><span class="o">=</span><span class="s1">&#39;=</span><span class="se">\&quot;</span><span class="s1">.*</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span><span class="p">,</span>
+                        <span class="n">dimen_pattern</span><span class="o">=</span><span class="s1">&#39;&gt;.*&lt;&#39;</span><span class="p">):</span>
+    <span class="n">modified</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">dst_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">src_path</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+            <span class="n">name_obj</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">name_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name_obj</span><span class="p">:</span>
+                <span class="n">dimen_obj</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">dimen_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dimen_obj</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">name_obj</span><span class="o">.</span><span class="n">group</span><span class="p">()[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">org_dimen</span> <span class="o">=</span> <span class="n">dimen_obj</span><span class="o">.</span><span class="n">group</span><span class="p">()[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+                    <span class="n">cur_dimen</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">org_dimen</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+                    <span class="n">src_dp</span> <span class="o">=</span> <span class="n">dimen_obj</span><span class="o">.</span><span class="n">group</span><span class="p">()[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">dst_dp</span> <span class="o">=</span> <span class="n">cur_dimen</span> <span class="o">+</span> <span class="n">dimen_obj</span><span class="o">.</span><span class="n">group</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">yield</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">src_dp</span><span class="p">,</span> <span class="n">dst_dp</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">org_dimen</span><span class="p">,</span> <span class="n">cur_dimen</span><span class="p">)</span>
+                    <span class="n">modified</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">dst_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">dst_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">modified</span></div>
+
+
+<span class="c1"># 当src_path所代表的xml，不含有dimens资源时，不需要生成此文件</span>
+<div class="viewcode-block" id="generate_single_dimen_xml"><a class="viewcode-back" href="../dimen_transformer.html#dimen_transformer.generate_single_dimen_xml">[docs]</a><span class="k">def</span> <span class="nf">generate_single_dimen_xml</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">generate_single_xml</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">src_dp</span><span class="p">,</span> <span class="n">dst_dp</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="s1">&#39; &#39;</span><span class="p">,</span>
+                  <span class="n">WORD_GREEN</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span>
+                  <span class="n">WORD_RED</span><span class="p">,</span> <span class="n">src_dp</span><span class="p">,</span> <span class="n">WORD_YELLOW</span><span class="p">,</span> <span class="s1">&#39; =&gt; &#39;</span><span class="p">,</span> <span class="n">WORD_RED</span><span class="p">,</span> <span class="n">dst_dp</span><span class="p">,</span> <span class="n">CLOSE</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">dst_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="transform_dimen_xmls"><a class="viewcode-back" href="../dimen_transformer.html#dimen_transformer.transform_dimen_xmls">[docs]</a><span class="k">def</span> <span class="nf">transform_dimen_xmls</span><span class="p">(</span><span class="n">src_suffix</span><span class="p">,</span> <span class="n">src_dimen</span><span class="p">,</span> <span class="n">dst_suffix</span><span class="p">,</span> <span class="n">dst_dimen</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+    <span class="k">for</span> <span class="n">res_dir</span> <span class="ow">in</span> <span class="n">get_res_dirs</span><span class="p">(</span><span class="n">root_dir</span><span class="p">):</span>
+        <span class="n">src_dir</span> <span class="o">=</span> <span class="n">get_res_value_dir</span><span class="p">(</span><span class="n">res_dir</span><span class="p">,</span> <span class="n">src_suffix</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">src_dir</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">res_dir</span><span class="p">,</span> <span class="n">CLOSE</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">src_dimen</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">dst_dimen</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">WORD_YELLOW</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> =&gt; </span><span class="si">%s</span><span class="se">\t</span><span class="s1"> scale:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">src_suffix</span><span class="p">,</span> <span class="n">dst_suffix</span><span class="p">,</span> <span class="n">scale</span><span class="p">),</span> <span class="n">CLOSE</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dir_names</span><span class="p">,</span> <span class="n">file_names</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">src_dir</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">file_names</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\.xml$&#39;</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">src_path</span> <span class="o">=</span> <span class="n">src_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">file_name</span>
+                <span class="n">dst_dir</span> <span class="o">=</span> <span class="n">res_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s1">&#39;values-&#39;</span> <span class="o">+</span> <span class="n">dst_suffix</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span>
+                <span class="n">dst_path</span> <span class="o">=</span> <span class="n">dst_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">file_name</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">WORD_BLUE</span><span class="p">,</span> <span class="n">src_path</span><span class="p">,</span> <span class="n">CLOSE</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">generate_single_dimen_xml</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="transform_single_dimen_xml_relatively"><a class="viewcode-back" href="../dimen_transformer.html#dimen_transformer.transform_single_dimen_xml_relatively">[docs]</a><span class="k">def</span> <span class="nf">transform_single_dimen_xml_relatively</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="o">*</span><span class="n">transform_dimens</span><span class="p">):</span>
+    <span class="n">src_path</span> <span class="o">=</span> <span class="n">get_path_relative_2_absolute</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+    <span class="n">transform_single_dimen_xml</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="o">*</span><span class="n">transform_dimens</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="transform_single_dimen_xml"><a class="viewcode-back" href="../dimen_transformer.html#dimen_transformer.transform_single_dimen_xml">[docs]</a><span class="k">def</span> <span class="nf">transform_single_dimen_xml</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="o">*</span><span class="n">transform_dimens</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;.*\.xml$&#39;</span><span class="p">,</span> <span class="n">src_path</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">src_dimen</span> <span class="o">=</span> <span class="n">get_src_dimen</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">src_dimen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">res_dir</span> <span class="o">=</span> <span class="n">get_res_dir</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">res_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">get_file_name</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">dst_dimen</span> <span class="ow">in</span> <span class="n">transform_dimens</span><span class="p">:</span>
+        <span class="n">dst_dir</span> <span class="o">=</span> <span class="n">get_res_value_dir</span><span class="p">(</span><span class="n">res_dir</span><span class="p">,</span> <span class="n">dst_dimen</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span>
+        <span class="n">dst_path</span> <span class="o">=</span> <span class="n">dst_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">file_name</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">get_dimen</span><span class="p">(</span><span class="n">src_dimen</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">get_dimen</span><span class="p">(</span><span class="n">dst_dimen</span><span class="p">))</span>
+        <span class="n">generate_single_dimen_xml</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../dimen_transformer.html#dimen_transformer.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;参数&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Auto Dimen Transformer&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">WORD_YELLOW</span><span class="p">,</span> <span class="n">title</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">),</span> <span class="n">CLOSE</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="n">func_name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">func_name</span> <span class="o">==</span> <span class="s1">&#39;transform_single_dimen_xml&#39;</span><span class="p">:</span>
+        <span class="n">transform_single_dimen_xml</span><span class="p">(</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">func_name</span> <span class="o">==</span> <span class="s1">&#39;transform_dimen_xmls&#39;</span><span class="p">:</span>
+        <span class="n">transform_dimen_xmls</span><span class="p">(</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="k">return</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please input 1, 2, 4 or 5 arguments!&#39;</span><span class="p">)</span></div>
+
+    <span class="c1"># project_dir = &#39;/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland&#39;</span>
+    <span class="c1"># res_dir = &#39;/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland/app/src/main/res&#39;</span>
+    <span class="c1"># layout_dir = &#39;/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland/app/src/main/res/layout&#39;</span>
+    <span class="c1"># file_name = &#39;activity_beauty_memory.xml&#39;</span>
+    <span class="c1"># src_path = layout_dir + os.sep + file_name</span>
+
+    <span class="c1"># relative_path = &#39;app/src/main/res/values-xhdpi/dimens.xml&#39;</span>
+    <span class="c1"># src_path = project_dir + os.sep + relative_path</span>
+    <span class="c1"># transform_single_dimen_xml(src_path, &#39;xxhdpi&#39;)</span>
+    <span class="c1"># transform_dimen_xmls(&#39;default&#39;, 1.5, &#39;xxhdpi&#39;, 3.0, project_dir)</span>
+
+    <span class="c1"># project_dir = &#39;/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland&#39;</span>
+    <span class="c1"># relative_path = &#39;app/src/main/res/values/dimens.xml&#39;</span>
+    <span class="c1"># src_path = project_dir + os.sep + relative_path</span>
+    <span class="c1"># transform_single_dimen_xml(src_path, &#39;xxhdpi&#39;)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, zhangyuwen1987@gmail.com.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

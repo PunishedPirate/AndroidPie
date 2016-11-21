@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util &#8212; AndroidPie 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="AndroidPie 1.0.0 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for util</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># @author zhangyuwen1987@gmail.com</span>
+<span class="c1"># @date   2016/10/09</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">NO_DIRECTORY_PATTERN</span> <span class="o">=</span> <span class="s1">&#39;(^.*/build/.*$)|(^.*/\.idea/.*$)|(^.*/build$)|(^.*/\.idea$)&#39;</span>
+
+
+<div class="viewcode-block" id="camel_to_underline"><a class="viewcode-back" href="../util.html#util.camel_to_underline">[docs]</a><span class="k">def</span> <span class="nf">camel_to_underline</span><span class="p">(</span><span class="n">camel_format</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    驼峰命名格式转下划线命名格式</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">camel_format</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">camel_format</span>
+
+    <span class="n">underline_format</span> <span class="o">=</span> <span class="n">camel_format</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">_s_</span> <span class="ow">in</span> <span class="n">camel_format</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">underline_format</span> <span class="o">+=</span> <span class="n">_s_</span> <span class="k">if</span> <span class="n">_s_</span><span class="o">.</span><span class="n">islower</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">_s_</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">underline_format</span></div>
+
+
+<div class="viewcode-block" id="underline_to_camel"><a class="viewcode-back" href="../util.html#util.underline_to_camel">[docs]</a><span class="k">def</span> <span class="nf">underline_to_camel</span><span class="p">(</span><span class="n">underline_format</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    下划线命名格式驼峰命名格式</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">underline_format</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">underline_format</span>
+
+    <span class="n">camel_format</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">_s_</span> <span class="ow">in</span> <span class="n">underline_format</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+        <span class="n">camel_format</span> <span class="o">+=</span> <span class="n">_s_</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">camel_format</span></div>
+
+
+<div class="viewcode-block" id="get_unique_number"><a class="viewcode-back" href="../util.html#util.get_unique_number">[docs]</a><span class="k">def</span> <span class="nf">get_unique_number</span><span class="p">():</span>
+    <span class="n">now_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span>  <span class="c1"># 生成当前时间</span>
+    <span class="n">random_num</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>  <span class="c1"># 生成的随机整数n，其中0&lt;=n&lt;=100</span>
+    <span class="k">if</span> <span class="n">random_num</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">random_num</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">random_num</span><span class="p">)</span>
+    <span class="n">unique_num</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">now_time</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">random_num</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">unique_num</span></div>
+
+
+<div class="viewcode-block" id="filter_file_lines"><a class="viewcode-back" href="../util.html#util.filter_file_lines">[docs]</a><span class="k">def</span> <span class="nf">filter_file_lines</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">):</span>
+    <span class="n">dst_path</span> <span class="o">=</span> <span class="n">src_path</span> <span class="o">+</span> <span class="s1">&#39;.tmp&#39;</span>
+    <span class="n">dst_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">src_path</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span>
+            <span class="k">continue</span>
+        <span class="n">dst_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">dst_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="n">src_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="replace_file_lines"><a class="viewcode-back" href="../util.html#util.replace_file_lines">[docs]</a><span class="k">def</span> <span class="nf">replace_file_lines</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">,</span> <span class="n">old_string</span><span class="p">,</span> <span class="n">new_string</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">dic</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">dic</span><span class="p">[</span><span class="n">old_string</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_string</span>
+    <span class="k">while</span> <span class="n">args</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">dic</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">new_line</span> <span class="ow">in</span> <span class="n">replace_file_lines_complex</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">dic</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">new_line</span></div>
+
+
+<div class="viewcode-block" id="replace_file_lines_complex"><a class="viewcode-back" href="../util.html#util.replace_file_lines_complex">[docs]</a><span class="k">def</span> <span class="nf">replace_file_lines_complex</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">dst_path</span> <span class="o">=</span> <span class="n">src_path</span> <span class="o">+</span> <span class="s1">&#39;.tmp&#39;</span>
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">new_line</span> <span class="ow">in</span> <span class="n">generate_file_lines_complex</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">new_line</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="n">src_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_file_lines"><a class="viewcode-back" href="../util.html#util.generate_file_lines">[docs]</a><span class="k">def</span> <span class="nf">generate_file_lines</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">,</span> <span class="n">old_string</span><span class="p">,</span> <span class="n">new_string</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">dic</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">dic</span><span class="p">[</span><span class="n">old_string</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_string</span>
+    <span class="k">while</span> <span class="n">args</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">dic</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">new_line</span> <span class="ow">in</span> <span class="n">generate_file_lines_complex</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">dic</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">new_line</span></div>
+
+
+<div class="viewcode-block" id="generate_file_lines_complex"><a class="viewcode-back" href="../util.html#util.generate_file_lines_complex">[docs]</a><span class="k">def</span> <span class="nf">generate_file_lines_complex</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">line_pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">dst_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">src_path</span><span class="p">)):</span>
+        <span class="n">new_line</span> <span class="o">=</span> <span class="n">line</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">line_pattern</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">new_line</span> <span class="o">=</span> <span class="n">new_line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">yield</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">new_line</span>
+        <span class="n">dst_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">new_line</span><span class="p">)</span>
+    <span class="n">dst_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_match_dirs"><a class="viewcode-back" href="../util.html#util.get_match_dirs">[docs]</a><span class="k">def</span> <span class="nf">get_match_dirs</span><span class="p">(</span><span class="n">top_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">yes_pattern</span><span class="o">=</span><span class="s1">&#39;^.*/res$&#39;</span><span class="p">,</span> <span class="n">no_pattern</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dir_names</span><span class="p">,</span> <span class="n">file_names</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">top_dir</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">NO_DIRECTORY_PATTERN</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">yes_pattern</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">no_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">parent</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">no_pattern</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">parent</span></div>
+
+
+<div class="viewcode-block" id="get_res_dirs"><a class="viewcode-back" href="../util.html#util.get_res_dirs">[docs]</a><span class="k">def</span> <span class="nf">get_res_dirs</span><span class="p">(</span><span class="n">top_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+    <span class="k">for</span> <span class="n">res_dir</span> <span class="ow">in</span> <span class="n">get_match_dirs</span><span class="p">(</span><span class="n">top_dir</span><span class="p">,</span> <span class="s1">&#39;^.*/res$&#39;</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">res_dir</span></div>
+
+
+<div class="viewcode-block" id="get_match_paths"><a class="viewcode-back" href="../util.html#util.get_match_paths">[docs]</a><span class="k">def</span> <span class="nf">get_match_paths</span><span class="p">(</span><span class="n">top_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">yes_pattern</span><span class="o">=</span><span class="s1">&#39;^.*\.xml$&#39;</span><span class="p">,</span> <span class="n">no_pattern</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dir_names</span><span class="p">,</span> <span class="n">file_names</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">top_dir</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">NO_DIRECTORY_PATTERN</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">file_names</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">parent</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">file_name</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">yes_pattern</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">no_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">path</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">no_pattern</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">path</span></div>
+
+
+<div class="viewcode-block" id="get_build_gradle_paths"><a class="viewcode-back" href="../util.html#util.get_build_gradle_paths">[docs]</a><span class="k">def</span> <span class="nf">get_build_gradle_paths</span><span class="p">(</span><span class="n">top_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">get_match_paths</span><span class="p">(</span><span class="n">top_dir</span><span class="p">,</span> <span class="s1">&#39;^.*/build\.gradle$&#39;</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">path</span></div>
+
+
+<div class="viewcode-block" id="get_path_relative_2_absolute"><a class="viewcode-back" href="../util.html#util.get_path_relative_2_absolute">[docs]</a><span class="k">def</span> <span class="nf">get_path_relative_2_absolute</span><span class="p">(</span><span class="n">relative_path</span><span class="p">,</span> <span class="n">root_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()):</span>
+    <span class="c1"># root_dir = &#39;/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland&#39;</span>
+    <span class="k">return</span> <span class="n">root_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">relative_path</span></div>
+
+
+<div class="viewcode-block" id="get_res_dir"><a class="viewcode-back" href="../util.html#util.get_res_dir">[docs]</a><span class="k">def</span> <span class="nf">get_res_dir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">res_dir</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;.*/res&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">res_dir</span><span class="p">:</span>
+        <span class="n">res_dir</span> <span class="o">=</span> <span class="n">res_dir</span><span class="o">.</span><span class="n">group</span><span class="p">()[:]</span>
+    <span class="k">return</span> <span class="n">res_dir</span></div>
+
+
+<div class="viewcode-block" id="get_res_value_dir"><a class="viewcode-back" href="../util.html#util.get_res_value_dir">[docs]</a><span class="k">def</span> <span class="nf">get_res_value_dir</span><span class="p">(</span><span class="n">res_dir</span><span class="p">,</span> <span class="n">src_dimen</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">src_dimen</span> <span class="o">==</span> <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">res_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s1">&#39;values&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">res_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="s1">&#39;values-&#39;</span> <span class="o">+</span> <span class="n">src_dimen</span></div>
+
+
+<div class="viewcode-block" id="get_src_dimen"><a class="viewcode-back" href="../util.html#util.get_src_dimen">[docs]</a><span class="k">def</span> <span class="nf">get_src_dimen</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">src_dimen</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;/values-.*dpi/&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">src_dimen</span><span class="p">:</span>
+        <span class="n">src_dimen</span> <span class="o">=</span> <span class="n">src_dimen</span><span class="o">.</span><span class="n">group</span><span class="p">()[</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">src_dimen</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;/values/&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">src_dimen</span><span class="p">:</span>
+            <span class="n">src_dimen</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
+    <span class="k">return</span> <span class="n">src_dimen</span></div>
+
+
+<div class="viewcode-block" id="get_file_name"><a class="viewcode-back" href="../util.html#util.get_file_name">[docs]</a><span class="k">def</span> <span class="nf">get_file_name</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;/[^/]*$&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">file_name</span><span class="p">:</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">file_name</span><span class="o">.</span><span class="n">group</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">file_name</span></div>
+
+
+<span class="c1"># 根据src_path所指向的*/res/layout/*.xml，以及src_dimen in [&#39;default&#39;, &#39;hdpi&#39;, &#39;xhdpi&#39;, &#39;xxhdpi&#39;]</span>
+<span class="c1"># 获得layout xml所对应的在src——dimen密度下面的dimen文件路径</span>
+<div class="viewcode-block" id="get_dst_dimen_xml_path"><a class="viewcode-back" href="../util.html#util.get_dst_dimen_xml_path">[docs]</a><span class="k">def</span> <span class="nf">get_dst_dimen_xml_path</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">src_dimen</span><span class="p">):</span>
+    <span class="n">res_dir</span> <span class="o">=</span> <span class="n">get_res_dir</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">res_dir</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">value_dir</span> <span class="o">=</span> <span class="n">get_res_value_dir</span><span class="p">(</span><span class="n">res_dir</span><span class="p">,</span> <span class="n">src_dimen</span><span class="p">)</span>
+
+    <span class="n">src_name</span> <span class="o">=</span> <span class="n">get_file_name</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+    <span class="n">dst_name</span> <span class="o">=</span> <span class="s1">&#39;dimens_&#39;</span> <span class="o">+</span> <span class="n">src_name</span>
+    <span class="n">dst_path</span> <span class="o">=</span> <span class="n">value_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">dst_name</span>
+
+    <span class="k">return</span> <span class="n">dst_path</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../util.html#util.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello Python&#39;</span><span class="p">)</span>
+
+    <span class="n">project_dir</span> <span class="o">=</span> <span class="s1">&#39;/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland&#39;</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="s1">&#39;app/src/main/res/values-xhdpi/dimens_activity_first_meet.xml&#39;</span>
+
+    <span class="n">src_path</span> <span class="o">=</span> <span class="n">project_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="n">file_path</span>
+    <span class="c1"># for number, line in filter_file_line(src_path, &#39;^&lt;/resources&gt;$&#39;):</span>
+    <span class="c1">#     print(number, &#39;-&#39; * 10, line, sep=&#39;&#39;)</span>
+
+    <span class="c1"># for res_dir in get_res_dirs(project_dir):</span>
+    <span class="c1">#     print(res_dir)</span>
+
+    <span class="c1"># src_path = project_dir + os.sep + file_path</span>
+    <span class="c1"># dst_path = src_path + &#39;.tmp&#39;</span>
+    <span class="c1"># for number, line, new_line in replace_file_lines(</span>
+    <span class="c1">#         src_path, &#39;^.*&lt;dimen.*$&#39;, &#39;&lt;dimen&#39;, &#39;&lt;tricky&#39;, &#39;&lt;/dimen&#39;, &#39;&lt;/tricky&#39;):</span>
+    <span class="c1">#     print(number, WORD_YELLOW, &#39;:&#39;, CLOSE,</span>
+    <span class="c1">#           line.strip(), WORD_RED, &#39;&lt;&#39; + &#39;-&#39; * 3 + &#39;&gt;&#39;, CLOSE, new_line.strip(), sep=&#39;&#39;)</span>
+
+    <span class="c1"># for path in get_build_gradle_paths(project_dir):</span>
+    <span class="c1">#     print(path)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">get_file_name</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span></div>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hello Python&#39;</span><span class="p">)</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, zhangyuwen1987@gmail.com.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
