@@ -34,6 +34,8 @@ import os
 
 import sys
 
+import sphinx_rtd_theme
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
@@ -346,4 +348,12 @@ texinfo_documents = [
 #
 # texinfo_no_detailmenu = False
 
+# include python source directory
+# 将源代码所在目录包含到系统目录中
 sys.path.insert(0, os.path.abspath('../..'))
+
+# set sphinx_rtd_theme
+# 设置文档的主题
+html_theme = "sphinx_rtd_theme"
+
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
