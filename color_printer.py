@@ -26,49 +26,49 @@ CLOSE = '\33[0m'
 
 def print_black(*args, **kwargs):
     print(WORD_BLACK, sep='', end='')
-    print(*args, **kwargs, end='')
+    print(*args, **kwargs)
     print(CLOSE)
 
 
 def print_red(*args, **kwargs):
     print(WORD_RED, sep='', end='')
-    print(*args, **kwargs, end='')
+    print(*args, **kwargs)
     print(CLOSE)
 
 
 def print_green(*args, **kwargs):
     print(WORD_GREEN, sep='', end='')
-    print(*args, **kwargs, end='')
+    print(*args, **kwargs)
     print(CLOSE)
 
 
 def print_yellow(*args, **kwargs):
     print(WORD_YELLOW, sep='', end='')
-    print(*args, **kwargs, end='')
+    print(*args, **kwargs)
     print(CLOSE)
 
 
 def print_blue(*args, **kwargs):
     print(WORD_BLUE, sep='', end='')
-    print(*args, **kwargs, end='')
+    print(*args, **kwargs)
     print(CLOSE)
 
 
 def print_purple(*args, **kwargs):
     print(WORD_PURPLE, sep='', end='')
-    print(*args, **kwargs, end='')
+    print(*args, **kwargs)
     print(CLOSE)
 
 
 def print_sky_blue(*args, **kwargs):
     print(WORD_SKY_BLUE, sep='', end='')
-    print(*args, **kwargs, end='')
+    print(*args, **kwargs)
     print(CLOSE)
 
 
 def print_white(*args, **kwargs):
     print(WORD_WHITE, sep='', end='')
-    print(*args, **kwargs, end='')
+    print(*args, **kwargs)
     print(CLOSE)
 
 

@@ -1,5 +1,5 @@
 #
-#  @author zhangyuwen1987@gmail.com
+# @author zhangyuwen1987@gmail.com
 # @date   2016/09/05
 #
 
@@ -16,6 +16,14 @@ from util import replace_file_lines
 
 
 def update_build_gradle_file_lines(old_string, new_string, root_dir=os.getcwd(), pattern=None):
+    """
+    找出当前目录下，所有build.gradle文件，并替换依赖库的版本号
+    :param old_string:
+    :param new_string:
+    :param root_dir:
+    :param pattern:
+    :return:
+    """
     if pattern is None:
         pattern = '.*(compile|provided).*:%s\'$' % old_string
     for path in get_build_gradle_paths(root_dir):
@@ -40,8 +48,6 @@ def main():
                         'path_pattern="^build.gradle$", line_pattern=".*compile.*:[old_string]\'$"',
               CLOSE)
         print(CLOSE)
-
-        # update_build_gradle_file_line('23.2.0', '24.2.1', '/Users/zhangyuwen/Repository/Le/LetvGameCenter_Mainland')
 
 
 if __name__ == '__main__':
